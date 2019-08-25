@@ -8,6 +8,8 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/mattes/go-asciibot"
+
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -24,9 +26,8 @@ func Startup(cf bson.M) *gin.Engine {
 	// Routers
 	fmt.Println("Create routers ...")
 	routers(r)
-	// Read data info
-	fmt.Println("Read data ...")
-	readData()
+	// 连接数据库服务器
+	connectMongoDB()
 	// 随机显示机器人
 	fmt.Println(asciibot.Random())
 	// 监控信息
@@ -39,12 +40,10 @@ func Startup(cf bson.M) *gin.Engine {
 func routers(r *gin.Engine) {
 	r.GET("/test", test)
 	r.POST("/user/login", login)
-	r.POST("/group/add", addGroup)
-	r.PUT("/group/update", updateGroup)
-	r.GET("/group/list", groupList)
 	r.POST("/server/add", addServer)
 	r.PUT("/server/update", updateServer)
 	r.GET("/server/get", getServer)
+
 	// 数据集
 	r.GET("/data/list", dataList)
 	r.PUT("/data/update", updateData)
@@ -57,25 +56,14 @@ func keyRequired(c *gin.Context) {
 
 }
 
-// 读取数据信息
-func readData() {
-	// 使用 db
-	// db, err := leveldb.OpenFile(dataPath, nil)
-	// if err != nil {
-	// 	fmt.Println("open err: ", err.Error())
-	// }
-	// defer db.Close()
-	// err = db.Put([]byte("a"), []byte("hello world"), nil)
-	// if err != nil {
-	// 	fmt.Println("put err: ", err.Error())
-	// }
-
-	// get data
-	// data, err := db.Get([]byte("a"), nil)
-	// if err != nil {
-	// 	fmt.Println("get err: ", err.Error())
-	// }
-	// fmt.Printf("%c\n", data)
+func connectMongoDB() {
+	mgos, err := mgo.Dial(fmt.Sprintf("%s:%s", "127.0.0.1", "27017"))
+	if err != nil {
+		fmt.Println("Can't connect MongoDB server!")
+		panic(err.Error())
+	}
+	mgos.SetMode(mgo.Monotonic, true)
+	fmt.Println("Connected to MongoDB!")
 }
 
 // 实时监控服务器性能

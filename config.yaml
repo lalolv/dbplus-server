@@ -4,6 +4,12 @@ server:
 
 debug: 1
 
-user: 
+user:
   name: admin
+  passwd: 123
+
+mongodb:
+  host: 127.0.0.1
+  port: 27017
+  user: admin
   passwd: 123
