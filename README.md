@@ -1,2 +1,11 @@
-# dbplus-server
-DB+ Server, support api for web
+# DB+
+
+数据管理、监控、分析工具
+
+## 计划
+
+- 用户登录
+- 添加服务器
+- 多语言
+- 编辑器的代码自动完成
+- 文档集成
