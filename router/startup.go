@@ -8,6 +8,8 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/mattes/go-asciibot"
+
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -24,9 +26,8 @@ func Startup(cf bson.M) *gin.Engine {
 	// Routers
 	fmt.Println("Create routers ...")
 	routers(r)
-	// Read data info
-	fmt.Println("Read data ...")
-	readData()
+	// 连接数据库服务器
+	connectMongoDB()
 	// 随机显示机器人
 	fmt.Println(asciibot.Random())
 	// 监控信息
@@ -38,12 +39,9 @@ func Startup(cf bson.M) *gin.Engine {
 // 路由
 func routers(r *gin.Engine) {
 	r.GET("/test", test)
+	// Login
 	r.POST("/user/login", login)
-	r.POST("/group/add", addGroup)
-	r.PUT("/group/update", updateGroup)
-	r.GET("/group/list", groupList)
-	r.POST("/server/add", addServer)
-	r.PUT("/server/update", updateServer)
+	// dblist
 	r.GET("/server/get", getServer)
 	// 数据集
 	r.GET("/data/list", dataList)
@@ -53,49 +51,39 @@ func routers(r *gin.Engine) {
 }
 
 // 身份密钥验证
-func keyRequired(c *gin.Context) {
+// func keyRequired(c *gin.Context) {
 
-}
+// }
 
-// 读取数据信息
-func readData() {
-	// 使用 db
-	// db, err := leveldb.OpenFile(dataPath, nil)
-	// if err != nil {
-	// 	fmt.Println("open err: ", err.Error())
-	// }
-	// defer db.Close()
-	// err = db.Put([]byte("a"), []byte("hello world"), nil)
-	// if err != nil {
-	// 	fmt.Println("put err: ", err.Error())
-	// }
-
-	// get data
-	// data, err := db.Get([]byte("a"), nil)
-	// if err != nil {
-	// 	fmt.Println("get err: ", err.Error())
-	// }
-	// fmt.Printf("%c\n", data)
+func connectMongoDB() {
+	var err error
+	mgos, err = mgo.Dial(fmt.Sprintf("%s:%s", "127.0.0.1", "27017"))
+	if err != nil {
+		fmt.Println("Can't connect MongoDB server!")
+		panic(err.Error())
+	}
+	mgos.SetMode(mgo.Monotonic, true)
+	fmt.Println("Connected to MongoDB!")
 }
 
 // 实时监控服务器性能
-func monitoring() {
-	ss := mgos.Clone()
-	defer ss.Close()
+// func monitoring() {
+// 	ss := mgos.Clone()
+// 	defer ss.Close()
 
-	for {
-		var result bson.M
-		ss.Run(bson.M{"serverStatus": 1}, &result)
+// 	for {
+// 		var result bson.M
+// 		ss.Run(bson.M{"serverStatus": 1}, &result)
 
-		network := result["network"].(bson.M)
-		r1 := fmt.Sprintf("网络：传入%d字节 输出%d字节 请求总数%d", network["bytesIn"], network["bytesOut"], network["numRequests"])
-		mem := result["mem"].(bson.M)
-		r2 := fmt.Sprintf("内存占用：%d", mem["resident"])
-		fmt.Println(r1, r2)
+// 		network := result["network"].(bson.M)
+// 		r1 := fmt.Sprintf("网络：传入%d字节 输出%d字节 请求总数%d", network["bytesIn"], network["bytesOut"], network["numRequests"])
+// 		mem := result["mem"].(bson.M)
+// 		r2 := fmt.Sprintf("内存占用：%d", mem["resident"])
+// 		fmt.Println(r1, r2)
 
-		time.Sleep(time.Second * 2)
-	}
-}
+// 		time.Sleep(time.Second * 2)
+// 	}
+// }
 
 // 测试连接
 func test(c *gin.Context) {
