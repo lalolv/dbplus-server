@@ -6,9 +6,8 @@ import (
 )
 
 var (
-	groups []Group
-	conf   bson.M
-	mgos   *mgo.Session
+	conf bson.M
+	mgos *mgo.Session
 )
 
 // dataPath 数据保存路径
@@ -18,14 +17,6 @@ const dataPath string = "data"
 type User struct {
 	Name   string `form:"name" json:"name"`
 	Passwd string `form:"passwd" json:"passwd"`
-}
-
-// Group 服务器组
-type Group struct {
-	Key     string   `form:"key" json:"key"`
-	Name    string   `form:"name" json:"name"`
-	Desc    string   `form:"desc" json:"desc"`
-	Servers []Server `form:"servers" json:"servers"`
 }
 
 // Server 数据服务器

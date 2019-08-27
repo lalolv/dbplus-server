@@ -51,9 +51,9 @@ func routers(r *gin.Engine) {
 }
 
 // 身份密钥验证
-func keyRequired(c *gin.Context) {
+// func keyRequired(c *gin.Context) {
 
-}
+// }
 
 func connectMongoDB() {
 	var err error
@@ -67,23 +67,23 @@ func connectMongoDB() {
 }
 
 // 实时监控服务器性能
-func monitoring() {
-	ss := mgos.Clone()
-	defer ss.Close()
+// func monitoring() {
+// 	ss := mgos.Clone()
+// 	defer ss.Close()
 
-	for {
-		var result bson.M
-		ss.Run(bson.M{"serverStatus": 1}, &result)
+// 	for {
+// 		var result bson.M
+// 		ss.Run(bson.M{"serverStatus": 1}, &result)
 
-		network := result["network"].(bson.M)
-		r1 := fmt.Sprintf("网络：传入%d字节 输出%d字节 请求总数%d", network["bytesIn"], network["bytesOut"], network["numRequests"])
-		mem := result["mem"].(bson.M)
-		r2 := fmt.Sprintf("内存占用：%d", mem["resident"])
-		fmt.Println(r1, r2)
+// 		network := result["network"].(bson.M)
+// 		r1 := fmt.Sprintf("网络：传入%d字节 输出%d字节 请求总数%d", network["bytesIn"], network["bytesOut"], network["numRequests"])
+// 		mem := result["mem"].(bson.M)
+// 		r2 := fmt.Sprintf("内存占用：%d", mem["resident"])
+// 		fmt.Println(r1, r2)
 
-		time.Sleep(time.Second * 2)
-	}
-}
+// 		time.Sleep(time.Second * 2)
+// 	}
+// }
 
 // 测试连接
 func test(c *gin.Context) {

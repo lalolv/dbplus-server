@@ -55,7 +55,11 @@ func main() {
 	go graceful(s, 5*time.Second)
 
 	// 运行服务
-	s.ListenAndServe()
+	err = s.ListenAndServe()
+	if err != nil {
+		fmt.Println("运行错误", err.Error())
+		panic(err.Error())
+	}
 }
 
 // 停止服务

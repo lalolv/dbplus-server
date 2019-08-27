@@ -22,11 +22,17 @@ func dataList(c *gin.Context) {
 	db := ss.DB(dbName)
 
 	// 数据列表
+	header := []bson.M{}
 	var list []bson.M
-	db.C(collName).Find(nil).Skip(0).Limit(20).All(&list)
+
+	// 获取数据集
+	err := db.C(collName).Find(nil).Skip(0).Limit(20).All(&list)
+	if err != nil {
+		respData(c, -1, err.Error(), bson.M{"header": header, "list": list})
+		return
+	}
 
 	// 获取头部信息
-	header := []bson.M{}
 	for _, v := range list {
 		for k := range v {
 			// 判断重复
@@ -58,7 +64,12 @@ func updateData(c *gin.Context) {
 	collName := c.Query("coll_name")
 	// 参数体
 	var params bson.M
-	c.BindJSON(&params)
+	err := c.BindJSON(&params)
+	if err != nil {
+		respData(c, -1, err.Error(), "")
+		return
+	}
+
 	columnName, _ := goutil.ToString(params["column_name"])
 	updateVal := params["update_val"]
 	id := c.Query("id")
@@ -66,7 +77,11 @@ func updateData(c *gin.Context) {
 	// 目标集合
 	coll := mgos.DB(dbName).C(collName)
 	// update
-	coll.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{columnName: updateVal}})
+	err = coll.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{columnName: updateVal}})
+	if err != nil {
+		respData(c, -2, err.Error(), "")
+		return
+	}
 
 	// Resp
 	respData(c, 0, "ok", "")
@@ -80,13 +95,21 @@ func addData(c *gin.Context) {
 	collName := c.Query("coll_name")
 	// 参数体
 	var params bson.M
-	c.BindJSON(&params)
+	err := c.BindJSON(&params)
+	if err != nil {
+		respData(c, -1, err.Error(), "")
+		return
+	}
 
 	if len(params) > 0 {
 		// 目标集合
 		coll := mgos.DB(dbName).C(collName)
 		// add
-		coll.Insert(params)
+		err = coll.Insert(params)
+		if err != nil {
+			respData(c, -2, err.Error(), "")
+			return
+		}
 	}
 
 	// Resp
@@ -101,12 +124,20 @@ func removeData(c *gin.Context) {
 	id := c.Query("id")
 	// 参数体
 	var params bson.M
-	c.BindJSON(&params)
+	err := c.BindJSON(&params)
+	if err != nil {
+		respData(c, -1, err.Error(), "")
+		return
+	}
 
 	// 目标集合
 	coll := mgos.DB(dbName).C(collName)
 	// remove
-	coll.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+	err = coll.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+	if err != nil {
+		respData(c, -2, err.Error(), "")
+		return
+	}
 
 	// Resp
 	respData(c, 0, "ok", "")

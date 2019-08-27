@@ -1,0 +1,19 @@
+language: go
+
+matrix:
+  fast_finish: true
+  include:
+    - go: 1.12.x
+      env: GO111MODULE=on
+
+git:
+  depth: 10
+
+before_install:
+  - mkdir "${HOME}/go"; export GOPATH="${HOME}/go";
+
+install:
+  - go mod download
+  - export PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+
+go_import_path: github.com/lalolv/dbplus-server
