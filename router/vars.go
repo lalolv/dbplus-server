@@ -10,9 +10,6 @@ var (
 	mgos *mgo.Session
 )
 
-// dataPath 数据保存路径
-const dataPath string = "data"
-
 // User 用户信息
 type User struct {
 	Name   string `form:"name" json:"name"`

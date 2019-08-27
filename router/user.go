@@ -7,7 +7,11 @@ import (
 
 func login(c *gin.Context) {
 	var params User
-	c.BindJSON(&params)
+	err := c.BindJSON(&params)
+	if err != nil {
+		respData(c, -2, err.Error(), "")
+		return
+	}
 
 	// 获取默认用户名和密码
 	cfUser := conf["user"].(map[interface{}]interface{})
