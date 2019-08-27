@@ -39,11 +39,10 @@ func Startup(cf bson.M) *gin.Engine {
 // 路由
 func routers(r *gin.Engine) {
 	r.GET("/test", test)
+	// Login
 	r.POST("/user/login", login)
-	r.POST("/server/add", addServer)
-	r.PUT("/server/update", updateServer)
+	// dblist
 	r.GET("/server/get", getServer)
-
 	// 数据集
 	r.GET("/data/list", dataList)
 	r.PUT("/data/update", updateData)
@@ -57,7 +56,8 @@ func keyRequired(c *gin.Context) {
 }
 
 func connectMongoDB() {
-	mgos, err := mgo.Dial(fmt.Sprintf("%s:%s", "127.0.0.1", "27017"))
+	var err error
+	mgos, err = mgo.Dial(fmt.Sprintf("%s:%s", "127.0.0.1", "27017"))
 	if err != nil {
 		fmt.Println("Can't connect MongoDB server!")
 		panic(err.Error())
