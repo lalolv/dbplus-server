@@ -48,6 +48,8 @@ func routers(r *gin.Engine) {
 	r.PUT("/data/update", updateData)
 	r.POST("/data/add", addData)
 	r.POST("/data/remove", removeData)
+	// Web
+	r.StaticFS("/web", http.Dir("web"))
 }
 
 // 身份密钥验证
