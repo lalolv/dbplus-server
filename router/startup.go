@@ -38,7 +38,13 @@ func Startup(cf bson.M) *gin.Engine {
 
 // 路由
 func routers(r *gin.Engine) {
-	r.GET("/test", test)
+	// 主页，直接跳转到 web
+	r.GET("/", func(c *gin.Context) {
+		c.Request.URL.Path = "/web"
+		r.HandleContext(c)
+	})
+	// 测试连接
+	r.GET("/ping", ping)
 	// Login
 	r.POST("/user/login", login)
 	// dblist
@@ -88,7 +94,7 @@ func connectMongoDB() {
 // }
 
 // 测试连接
-func test(c *gin.Context) {
+func ping(c *gin.Context) {
 	// Resp
 	respData(c, 0, "OK!", fmt.Sprintf("已成功连接到服务接口"))
 }
