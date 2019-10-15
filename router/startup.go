@@ -43,7 +43,7 @@ func routers(r *gin.Engine) {
 		c.Request.URL.Path = "/web"
 		r.HandleContext(c)
 	})
-	// 测试连接
+	// Ping and test connect
 	r.GET("/ping", ping)
 	// Login
 	r.POST("/user/login", login)
@@ -54,6 +54,8 @@ func routers(r *gin.Engine) {
 	r.PUT("/data/update", updateData)
 	r.POST("/data/add", addData)
 	r.POST("/data/remove", removeData)
+	// import
+	r.POST("/data/import", importData)
 	// Web
 	r.StaticFS("/web", http.Dir("web"))
 }
