@@ -33,7 +33,6 @@ func importData(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err.Error())
 	}
-	fmt.Println(uData)
 
 	// 目标集合
 	collName := c.PostForm("coll_name")
