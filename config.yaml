@@ -9,7 +9,8 @@ user:
   passwd: 123
 
 mongodb:
-  host: 127.0.0.1
-  port: 27017
-  user: admin
-  passwd: 123
+  host: "49.235.110.25"
+  port: "27017"
+  user: "lalo"
+  pass: "1128"
+  db: "gd40"

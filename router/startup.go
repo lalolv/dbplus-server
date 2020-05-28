@@ -64,8 +64,16 @@ func routers(r *gin.Engine) {
 // }
 
 func connectMongoDB() {
+	mgoConf := conf["mongodb"].(map[interface{}]interface{})
+	info := &mgo.DialInfo{
+		Addrs:    []string{fmt.Sprintf("%v:%v", mgoConf["host"], mgoConf["port"])},
+		Timeout:  60 * time.Second,
+		Database: mgoConf["db"].(string),
+		Username: mgoConf["user"].(string),
+		Password: mgoConf["pass"].(string),
+	}
 	var err error
-	mgos, err = mgo.Dial(fmt.Sprintf("%s:%s", "127.0.0.1", "27017"))
+	mgos, err = mgo.DialWithInfo(info)
 	if err != nil {
 		fmt.Println("Can't connect MongoDB server!")
 		panic(err.Error())
